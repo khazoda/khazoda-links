@@ -5,11 +5,15 @@
   "platform_basicstorage": "modrinth.com/mod/basicstorage",
   "platform_breakerplacer": "modrinth.com/mod/breakerplacer",
   "platform_heirlooms": "modrinth.com/mod/heirlooms",
-  
+
   "platform_hookaduck": "modrinth.com/mod/hookaduck",
   "platform_kreebles": "modrinth.com/mod/kreebles",
   "platform_helpfulcampfires": "modrinth.com/mod/helpfulcampfires",
   "platform_plastar": "modrinth.com/mod/plastar",
   "platform_beefandblade": "modrinth.com/mod/beefandblade",
-  "platform_dwayne":"modrinth.com/mod/dwayne"
+  "platform_dwayne": "modrinth.com/mod/dwayne",
+
+  "platform_windchime": "modrinth.com/mod/windchime",
+  "platform_hbhap": "modrinth.com/mod/hbhap",
+  "platform_bzl": "modrinth.com/mod/bzl"
 }

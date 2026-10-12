@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const urlDisplay = document.getElementById("url-display");
   const urlText = document.getElementById("url-text");
   const grid = document.getElementById("mods-grid");
+  const panel = document.getElementById("mods-panel");
   const bubbles = Array.from(grid.querySelectorAll(".bubble"));
   let selected = null;
   let typewriterTimer, audioContext, audioGain, soundBuffers, soundPromise;
@@ -29,8 +30,9 @@ document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("pointerdown", () => resumeAudio().catch(() => {}), { once: true });
   window.addEventListener("blur", () => urlDisplay.classList.remove("ctrl-held"));
   window.addEventListener("pageshow", () => {
-    grid.classList.remove("departing");
-    grid.style.removeProperty("transform-origin");
+    panel.classList.remove("departing");
+    panel.style.removeProperty("transform-origin");
+    clearSelection();
   });
 
   function updateUrlArrow(event) {
@@ -95,10 +97,9 @@ document.addEventListener("DOMContentLoaded", () => {
       if (this !== urlDisplay && this !== selected) playSound();
     } else if (this === urlDisplay || keyboard || this === selected) {
       playSound({ reverse: true });
-      const bounds = grid.getBoundingClientRect();
-      grid.style.transformOrigin = `${window.innerWidth / 2 - bounds.left}px ${window.innerHeight / 2 - bounds.top}px`;
-      grid.classList.add("departing");
-      if (this !== urlDisplay) clearSelection();
+      const bounds = panel.getBoundingClientRect();
+      panel.style.transformOrigin = `${window.innerWidth / 2 - bounds.left}px ${window.innerHeight / 2 - bounds.top}px`;
+      panel.classList.add("departing");
     } else {
       event.preventDefault();
       selectBubble(this, false);

@@ -9,6 +9,7 @@ body {
 }
 
 body,
+#mods-panel,
 #url-display,
 .bubble {
   display: flex;
@@ -109,6 +110,11 @@ body,
 }
 
 /* Mod grid */
+#mods-panel {
+  flex-direction: column;
+  max-width: 100%;
+}
+
 #mods-container {
   display: flex;
   margin: 0.5rem;
@@ -126,12 +132,12 @@ body,
   min-width: 0;
 }
 
-#mods-grid.departing {
-  animation: grid-exit 0.18s ease-in forwards;
+#mods-panel.departing {
+  animation: panel-exit 0.18s ease-in forwards;
   pointer-events: none;
 }
 
-@keyframes grid-exit {
+@keyframes panel-exit {
   to {
     transform: scale(0);
   }
@@ -272,7 +278,7 @@ body,
   .url-arrow {
     transition: none;
   }
-  #mods-grid.departing {
+  #mods-panel.departing {
     animation: none;
   }
 }
