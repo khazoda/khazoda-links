@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
   const urlDisplay = document.getElementById("url-display");
-  const urlText = document.getElementById("url-text");
+  const urlSlug = document.getElementById("url-slug");
   const grid = document.getElementById("mods-grid");
   const panel = document.getElementById("mods-panel");
   const bubbles = Array.from(grid.querySelectorAll(".bubble"));
@@ -106,18 +106,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function clearTypewriter(hide = true) {
-    clearTimeout(typewriterTimer);
-    urlText.textContent = "";
-    if (hide) {
-      urlDisplay.classList.remove("visible");
-      urlDisplay.removeAttribute("href");
-      urlDisplay.removeAttribute("aria-label");
-    }
-  }
-
   function selectBubble(bubble, playAudio = true) {
-    clearTypewriter(!selected);
+    clearTimeout(typewriterTimer);
     selected = bubble;
     bubble.focus();
     if (playAudio) playSound();
@@ -126,21 +116,27 @@ document.addEventListener("DOMContentLoaded", () => {
     const url = href.replace(/^https?:\/\//, "");
     urlDisplay.setAttribute("href", href);
     urlDisplay.setAttribute("aria-label", `Open ${url}`);
-    typewriterTimer = setTimeout(() => typeUrl(url), 50);
+    urlDisplay.classList.add("visible");
+    typewriterTimer = setTimeout(() => typeUrl(url.slice("modrinth.com/mod/".length)), 50);
   }
 
   function clearSelection() {
     selected?.blur();
     selected = null;
-    clearTypewriter();
+    clearTimeout(typewriterTimer);
+    urlSlug.textContent = "";
+    urlDisplay.classList.remove("visible");
+    urlDisplay.removeAttribute("href");
+    urlDisplay.removeAttribute("aria-label");
   }
 
-  function typeUrl(url) {
-    urlDisplay.classList.add("visible");
-    let index = 0;
+  function typeUrl(slug) {
+    let deleting = !!urlSlug.textContent;
     function typeCharacter() {
-      urlText.textContent += url[index++];
-      if (index < url.length) typewriterTimer = setTimeout(typeCharacter, 30);
+      if (deleting) urlSlug.textContent = urlSlug.textContent.slice(0, -1);
+      else urlSlug.textContent += slug[urlSlug.textContent.length];
+      if (!urlSlug.textContent) deleting = false;
+      if (deleting || urlSlug.textContent !== slug) typewriterTimer = setTimeout(typeCharacter, deleting ? 15 : 30);
     }
     typeCharacter();
   }
