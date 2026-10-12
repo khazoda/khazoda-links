@@ -10,13 +10,6 @@ body {
   cursor: url("static/pointer.cur"), auto;
 }
 
-.pixelated {
-  image-rendering: -moz-crisp-edges;
-  image-rendering: -webkit-crisp-edges;
-  image-rendering: pixelated;
-  image-rendering: crisp-edges;
-}
-
 /* URL Display Bar */
 #url-display {
   width: 544px;
@@ -78,7 +71,7 @@ body {
   }
 }
 
-#links-container {
+#mods-container {
   display: flex;
   width: auto;
   margin: 0.5rem;
@@ -86,8 +79,8 @@ body {
   max-width: 100%;
 }
 
-/* 6 x 4 Grid */
-#links-grid {
+/* 6-column Grid */
+#mods-grid {
   margin: 0 auto;
   display: inline-grid;
   grid-template-columns: repeat(auto-fit, minmax(79px, 79px));
@@ -102,45 +95,45 @@ body {
   min-width: 0;
 }
 
-/* 5 x 5 Grid */
+/* 4-column Grid */
 @media (max-width: 600px) {
-  #links-grid {
+  #mods-grid {
     max-width: 360px;
   }
 }
 
-/* 4 x 6 Grid */
+/* 3-column Grid */
 @media (max-width: 415px) {
-  #links-grid {
+  #mods-grid {
     max-width: 290px;
   }
 }
 
-/* 3 x 8 Grid */
+/* 2-column Grid */
 @media (max-width: 322px) {
-  #links-grid {
+  #mods-grid {
     max-width: 220px;
   }
 }
 
-/* 2 x 12 Grid */
+/* Single-column Grid */
 @media (max-width: 252px) {
   body {
     justify-content: flex-start;
   }
-  #links-grid {
+  #mods-grid {
     max-width: 150px;
   }
 }
 
-/* 1 x 24 Grid */
+/* Narrow Single-column Grid */
 @media (max-width: 198px) {
-  #links-grid {
+  #mods-grid {
     max-width: 80px;
   }
 }
 
-.bubble:has(div) {
+.bubble {
   background: linear-gradient(180deg, #fff 75%, #e6e6e6 100%);
   border-radius: 10px;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.2);
@@ -178,19 +171,19 @@ body {
 }
 
 /* Pop Out */
-.bubble:has(div):hover {
+.bubble:hover {
   transform: scale(1.05) translateY(-2px);
   box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.225);
 }
 
 /* Press In */
-.bubble:has(div):active {
+.bubble:active {
   transform: scale(0.95) translateY(2px);
   box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.15);
 }
 
 /* Focus Outline */
-.bubble:has(div):focus {
+.bubble:focus {
   outline: 5px solid #52c66f;
   box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.1), inset 0 0 0 1px rgba(255, 255, 255, 0.3), 0 4px 8px 2px rgba(82, 198, 111, 0.65),
     0 8px 16px 0 rgba(82, 198, 111, 0.45);
@@ -198,7 +191,7 @@ body {
 }
 
 /* Focus Outline Shine */
-.bubble:has(div):focus::before {
+.bubble:focus::before {
   content: "";
   position: absolute;
   top: -4px;
@@ -213,7 +206,7 @@ body {
 }
 
 /* Overlay Shine */
-.bubble:has(div)::after {
+.bubble::after {
   z-index: 1;
   content: "";
   position: absolute;
@@ -239,8 +232,6 @@ body {
   image-rendering: -webkit-optimize-contrast;
   image-rendering: -moz-crisp-edges;
   image-rendering: crisp-edges;
-  transform: translateZ(0);
-  backface-visibility: hidden;
 
   /* Disable image dragging */
   -webkit-user-drag: none;
@@ -249,26 +240,4 @@ body {
   -o-user-drag: none;
   user-drag: none;
   pointer-events: none;
-}
-
-/* Empty Bubble */
-.bubble:not(:has(div)) {
-  width: 79px;
-  height: 79px;
-  position: relative;
-  cursor: default;
-  pointer-events: none;
-}
-
-.bubble:not(:has(div))::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 30px;
-  height: 30px;
-  border-radius: 5px;
-  box-shadow: inset 0 1px 5px 0 rgba(0, 0, 0, 0.2);
-  background: rgba(0, 0, 0, 0.01);
 }

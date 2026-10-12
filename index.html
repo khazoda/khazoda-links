@@ -1,13 +1,15 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Khazoda's Links" />
+    <meta name="description" content="Khazoda's Mod Links" />
     <meta name="author" content="Khazoda" />
-    <meta name="keywords" content="Khazoda, Links, Projects, Mods" />
+    <meta name="keywords" content="Khazoda, Minecraft, Mods, Modrinth" />
 
-    <title>Khazoda's Links</title>
+    <link rel="canonical" href="https://mods.khazoda.com/" />
+
+    <title>Khazoda's Mod Links</title>
     <link rel="stylesheet" href="style.css" />
 
     <link rel="preload" href="static/pointer.cur" as="image" />
@@ -19,89 +21,131 @@
         .bubble {
           cursor: url(static/pointer_blue.cur), auto !important;
         }
-        /* Hide empty bubbles when JS is disabled */
-        .bubble:not(:has(div)) {
-          display: none;
-        }
       </style>
     </noscript>
     <script src="script.js"></script>
   </head>
   <body>
     <div id="url-display"></div>
-    
-    <div id="links-container">
-      <div id="links-grid">
-        <a class="bubble" href="https://modrinth.com/mod/plushables" target="_blank" rel="noopener noreferrer" data-site-key="platform_plushables">
+
+    <div id="mods-container">
+      <div id="mods-grid">
+        <a
+          class="bubble"
+          href="https://modrinth.com/mod/plushables"
+          target="_blank"
+          rel="noopener noreferrer"
+          data-site-key="platform_plushables">
           <div class="icon">
-            <img src="/static/links/platform_plushables.webp" alt="modrinth.com/mod/plushables" />
+            <img src="/static/mods/platform_plushables.webp" alt="modrinth.com/mod/plushables" />
           </div>
         </a>
-        <a class="bubble" href="https://modrinth.com/mod/basicweapons" target="_blank" rel="noopener noreferrer" data-site-key="platform_basicweapons">
+        <a
+          class="bubble"
+          href="https://modrinth.com/mod/basicweapons"
+          target="_blank"
+          rel="noopener noreferrer"
+          data-site-key="platform_basicweapons">
           <div class="icon">
-            <img src="/static/links/platform_basicweapons.webp" alt="modrinth.com/mod/basicweapons" />
+            <img src="/static/mods/platform_basicweapons.webp" alt="modrinth.com/mod/basicweapons" />
           </div>
         </a>
         <a class="bubble" href="https://modrinth.com/mod/bronze" target="_blank" rel="noopener noreferrer" data-site-key="platform_bronze">
           <div class="icon">
-            <img src="/static/links/platform_bronze.webp" alt="modrinth.com/mod/bronze" />
+            <img src="/static/mods/platform_bronze.webp" alt="modrinth.com/mod/bronze" />
           </div>
         </a>
-        <a class="bubble" href="https://modrinth.com/mod/basicstorage" target="_blank" rel="noopener noreferrer" data-site-key="platform_basicstorage">
+        <a
+          class="bubble"
+          href="https://modrinth.com/mod/basicstorage"
+          target="_blank"
+          rel="noopener noreferrer"
+          data-site-key="platform_basicstorage">
           <div class="icon">
-            <img src="/static/links/platform_basicstorage.webp" alt="modrinth.com/mod/basicstorage" />
+            <img src="/static/mods/platform_basicstorage.webp" alt="modrinth.com/mod/basicstorage" />
           </div>
         </a>
-        <a class="bubble" href="https://modrinth.com/mod/breakerplacer" target="_blank" rel="noopener noreferrer" data-site-key="platform_breakerplacer">
+        <a
+          class="bubble"
+          href="https://modrinth.com/mod/breakerplacer"
+          target="_blank"
+          rel="noopener noreferrer"
+          data-site-key="platform_breakerplacer">
           <div class="icon">
-            <img src="/static/links/platform_breakerplacer.webp" alt="modrinth.com/mod/breakerplacer" />
+            <img src="/static/mods/platform_breakerplacer.webp" alt="modrinth.com/mod/breakerplacer" />
           </div>
         </a>
-        <a class="bubble" href="https://modrinth.com/mod/heirlooms" target="_blank" rel="noopener noreferrer" data-site-key="platform_heirlooms">
+        <a
+          class="bubble"
+          href="https://modrinth.com/mod/heirlooms"
+          target="_blank"
+          rel="noopener noreferrer"
+          data-site-key="platform_heirlooms">
           <div class="icon">
-            <img src="/static/links/platform_heirlooms.webp" alt="modrinth.com/mod/heirlooms" />
-          </div>
-        </a>
-        
-        <!-- Empty bubbles -->
-        <!-- <a class="bubble" href="#" target="_blank" rel="noopener noreferrer"> </a>
-        <a class="bubble" href="#" target="_blank" rel="noopener noreferrer"> </a>
-        <a class="bubble" href="#" target="_blank" rel="noopener noreferrer"> </a>
-        <a class="bubble" href="#" target="_blank" rel="noopener noreferrer"> </a>
-        <a class="bubble" href="#" target="_blank" rel="noopener noreferrer"> </a>
-        <a class="bubble" href="#" target="_blank" rel="noopener noreferrer"> </a> -->
-
-        <a class="bubble secondary" href="https://modrinth.com/mod/hookaduck" target="_blank" rel="noopener noreferrer" data-site-key="platform_hookaduck">
-          <div class="icon">
-            <img src="/static/links/platform_hookaduck.webp" alt="modrinth.com/mod/hookaduck" />
-          </div>
-        </a>
-        <a class="bubble secondary" href="https://modrinth.com/mod/kreebles" target="_blank" rel="noopener noreferrer" data-site-key="platform_kreebles">
-          <div class="icon">
-            <img src="/static/links/platform_kreebles.webp" alt="modrinth.com/mod/kreebles" />
-          </div>
-        </a>
-        <a class="bubble secondary" href="https://modrinth.com/mod/helpfulcampfires" target="_blank" rel="noopener noreferrer" data-site-key="platform_helpfulcampfires">
-          <div class="icon">
-            <img src="/static/links/platform_helpfulcampfires.webp" alt="modrinth.com/mod/helpfulcampfires" />
-          </div>
-        </a>
-        <a class="bubble secondary" href="https://modrinth.com/mod/plastar" target="_blank" rel="noopener noreferrer" data-site-key="platform_plastar">
-          <div class="icon">
-            <img src="/static/links/platform_plastar.webp" alt="modrinth.com/mod/plastar" />
-          </div>
-        </a>
-        <a class="bubble secondary" href="https://modrinth.com/mod/beefandblade" target="_blank" rel="noopener noreferrer" data-site-key="platform_beefandblade">
-          <div class="icon">
-            <img src="/static/links/platform_beefandblade.webp" alt="modrinth.com/mod/beefandblade" />
-          </div>
-        </a>
-        <a class="bubble secondary" href="https://modrinth.com/mod/dwayne" target="_blank" rel="noopener noreferrer" data-site-key="platform_dwayne">
-          <div class="icon">
-            <img src="/static/links/platform_dwayne.webp" alt="modrinth.com/mod/dwayne" />
+            <img src="/static/mods/platform_heirlooms.webp" alt="modrinth.com/mod/heirlooms" />
           </div>
         </a>
 
+        <a
+          class="bubble secondary"
+          href="https://modrinth.com/mod/hookaduck"
+          target="_blank"
+          rel="noopener noreferrer"
+          data-site-key="platform_hookaduck">
+          <div class="icon">
+            <img src="/static/mods/platform_hookaduck.webp" alt="modrinth.com/mod/hookaduck" />
+          </div>
+        </a>
+        <a
+          class="bubble secondary"
+          href="https://modrinth.com/mod/kreebles"
+          target="_blank"
+          rel="noopener noreferrer"
+          data-site-key="platform_kreebles">
+          <div class="icon">
+            <img src="/static/mods/platform_kreebles.webp" alt="modrinth.com/mod/kreebles" />
+          </div>
+        </a>
+        <a
+          class="bubble secondary"
+          href="https://modrinth.com/mod/helpfulcampfires"
+          target="_blank"
+          rel="noopener noreferrer"
+          data-site-key="platform_helpfulcampfires">
+          <div class="icon">
+            <img src="/static/mods/platform_helpfulcampfires.webp" alt="modrinth.com/mod/helpfulcampfires" />
+          </div>
+        </a>
+        <a
+          class="bubble secondary"
+          href="https://modrinth.com/mod/plastar"
+          target="_blank"
+          rel="noopener noreferrer"
+          data-site-key="platform_plastar">
+          <div class="icon">
+            <img src="/static/mods/platform_plastar.webp" alt="modrinth.com/mod/plastar" />
+          </div>
+        </a>
+        <a
+          class="bubble secondary"
+          href="https://modrinth.com/mod/beefandblade"
+          target="_blank"
+          rel="noopener noreferrer"
+          data-site-key="platform_beefandblade">
+          <div class="icon">
+            <img src="/static/mods/platform_beefandblade.webp" alt="modrinth.com/mod/beefandblade" />
+          </div>
+        </a>
+        <a
+          class="bubble secondary"
+          href="https://modrinth.com/mod/dwayne"
+          target="_blank"
+          rel="noopener noreferrer"
+          data-site-key="platform_dwayne">
+          <div class="icon">
+            <img src="/static/mods/platform_dwayne.webp" alt="modrinth.com/mod/dwayne" />
+          </div>
+        </a>
       </div>
     </div>
   </body>

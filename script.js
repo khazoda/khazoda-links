@@ -6,7 +6,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     selectSoundBuffer: null,
     siteData: {},
     timeouts: {
-      click: null,
       typewriter: null,
     },
     typewriterSpeed: 30,
@@ -15,7 +14,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   // Cached DOM elements
   const elements = {
     urlDisplay: document.getElementById("url-display"),
-    linksGrid: document.getElementById("links-grid"),
+    modsGrid: document.getElementById("mods-grid"),
     bubbles: null,
   };
 
@@ -23,7 +22,6 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   async function initializeApplication() {
     await loadSiteData();
-    initializeAudioOnFirstInteraction();
     setupBubbleElements();
     setupEventListeners();
   }
@@ -37,25 +35,11 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
   }
 
-  // Lazy audio initialization
-  function initializeAudioOnFirstInteraction() {
-    document.addEventListener(
-      "click",
-      () => {
-        if (!appState.audioContext) {
-          appState.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        }
-      },
-      { once: true }
-    );
-  }
-
   function setupBubbleElements() {
-    elements.bubbles = document.querySelectorAll(".bubble:has(div)");
+    elements.bubbles = document.querySelectorAll(".bubble");
     elements.bubbles.forEach((bubble) => {
       bubble.style.cursor = "inherit";
       bubble.addEventListener("click", handleBubbleClick);
-      bubble.dataset.href = bubble.href;
     });
   }
 
@@ -104,20 +88,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
   }
 
-  function getSiteKeyFromBubble(bubble) {
-    if (bubble.dataset.siteKey) return bubble.dataset.siteKey;
-
-    const href = bubble.href || bubble.dataset.href;
-    if (!href) return null;
-
-    const cleanUrl = href.replace(/^https?:\/\//, "");
-    return (
-      Object.entries(appState.siteData).find(([key, url]) => 
-        cleanUrl.includes(url) || url.includes(cleanUrl.split("/")[0])
-      )?.[0] || null
-    );
-  }
-
   function clearAllTimeouts() {
     if (appState.timeouts.typewriter) {
       clearTimeout(appState.timeouts.typewriter);
@@ -135,26 +105,18 @@ document.addEventListener("DOMContentLoaded", async function () {
     clearAllTimeouts();
   }
 
-  async function selectBubble(bubble, hadPreviousSelection = false) {
+  function selectBubble(bubble, hadPreviousSelection = false) {
     clearTypewriterEffect(!hadPreviousSelection);
 
     appState.selectedBubble = bubble;
     bubble.focus();
     playSelectSound();
 
-    const siteKey = getSiteKeyFromBubble(bubble);
-    if (siteKey && appState.siteData[siteKey]) {
-      const url = appState.siteData[siteKey];
-      
-      setTimeout(() => startTypewriterEffect(url, appState.typewriterSpeed), 50); 
-      
-    } else {
-        // Fallback: type the HREF if no map exists
-        const rawUrl = bubble.getAttribute('href');
-        if(rawUrl && rawUrl !== "#") {
-            const cleanRaw = rawUrl.replace(/^https?:\/\//, "");
-            setTimeout(() => startTypewriterEffect(cleanRaw, appState.typewriterSpeed), 50); 
-        }
+    const siteKey = bubble.dataset.siteKey;
+    const rawUrl = bubble.getAttribute("href");
+    const url = appState.siteData[siteKey] || (rawUrl && rawUrl !== "#" ? rawUrl.replace(/^https?:\/\//, "") : null);
+    if (url) {
+      appState.timeouts.typewriter = setTimeout(() => startTypewriterEffect(url, appState.typewriterSpeed), 50);
     }
   }
 
@@ -167,7 +129,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   }
 
   function openBubbleLink(bubble) {
-    const href = bubble.href || bubble.dataset.href;
+    const href = bubble.getAttribute("href");
     if (href && href !== "#") {
       window.open(href, "_blank", "noopener,noreferrer");
     }
@@ -194,14 +156,14 @@ document.addEventListener("DOMContentLoaded", async function () {
   // --- Grid Navigation Logic ---
   function getBubblesArray() {
     if (!elements.bubbles) {
-      elements.bubbles = document.querySelectorAll(".bubble:has(div)");
+      elements.bubbles = document.querySelectorAll(".bubble");
     }
     return Array.from(elements.bubbles);
   }
 
   function calculateGridColumns() {
-    if (!elements.linksGrid) return 1;
-    return getComputedStyle(elements.linksGrid).gridTemplateColumns.split(" ").length;
+    if (!elements.modsGrid) return 1;
+    return getComputedStyle(elements.modsGrid).gridTemplateColumns.split(" ").length;
   }
 
   function getNextBubbleIndex(currentIndex, direction, bubblesCount, cols) {
@@ -245,7 +207,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   }
 
   function handleDocumentClick(event) {
-    if (!event.target.closest(".bubble:has(div)")) {
+    if (!event.target.closest(".bubble")) {
       clearSelection();
     }
   }
@@ -257,7 +219,8 @@ document.addEventListener("DOMContentLoaded", async function () {
       event.preventDefault();
       navigateGrid(event.key);
     } else if (event.key === "Enter" && appState.selectedBubble) {
-        openBubbleLink(appState.selectedBubble);
+      event.preventDefault();
+      openBubbleLink(appState.selectedBubble);
     }
   }
 
