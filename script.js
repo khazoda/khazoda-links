@@ -1,247 +1,164 @@
-document.addEventListener("DOMContentLoaded", async function () {
-  // Centralized application state
-  const appState = {
-    selectedBubble: null,
-    audioContext: null,
-    selectSoundBuffer: null,
-    siteData: {},
-    timeouts: {
-      typewriter: null,
-    },
-    typewriterSpeed: 30,
-  };
+document.addEventListener("DOMContentLoaded", () => {
+  const urlDisplay = document.getElementById("url-display");
+  const urlText = document.getElementById("url-text");
+  const grid = document.getElementById("mods-grid");
+  const bubbles = Array.from(grid.querySelectorAll(".bubble"));
+  let selected = null;
+  let typewriterTimer, audioContext, audioGain, soundBuffers, soundPromise;
 
-  // Cached DOM elements
-  const elements = {
-    urlDisplay: document.getElementById("url-display"),
-    modsGrid: document.getElementById("mods-grid"),
-    bubbles: null,
-  };
+  loadSounds();
+  for (const link of [...bubbles, urlDisplay]) {
+    link.addEventListener("pointerdown", handleLinkEvent);
+    link.addEventListener("click", handleLinkEvent);
+  }
+  document.addEventListener("click", (event) => {
+    if (!event.target.closest(".bubble, #url-display")) clearSelection();
+  });
+  document.addEventListener("keydown", (event) => {
+    updateUrlArrow(event);
+    if (event.key === "Escape") clearSelection();
+    else if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(event.key)) {
+      event.preventDefault();
+      const index = bubbles.indexOf(document.activeElement);
+      const columns = getComputedStyle(grid).gridTemplateColumns.split(" ").length;
+      selectBubble(bubbles[index === -1 ? 0 : nextBubbleIndex(index, event.key, columns)]);
+    }
+  });
+  document.addEventListener("keyup", updateUrlArrow);
+  document.addEventListener("pointerdown", updateUrlArrow);
+  document.addEventListener("pointerdown", () => resumeAudio().catch(() => {}), { once: true });
+  window.addEventListener("blur", () => urlDisplay.classList.remove("ctrl-held"));
+  window.addEventListener("pageshow", () => {
+    grid.classList.remove("departing");
+    grid.style.removeProperty("transform-origin");
+  });
 
-  await initializeApplication();
-
-  async function initializeApplication() {
-    await loadSiteData();
-    setupBubbleElements();
-    setupEventListeners();
+  function updateUrlArrow(event) {
+    urlDisplay.classList.toggle("ctrl-held", event.ctrlKey);
   }
 
-  async function loadSiteData() {
+  function getAudioContext() {
+    if (!audioContext) {
+      audioContext = new (window.AudioContext || window.webkitAudioContext)({ latencyHint: "interactive" });
+      audioGain = audioContext.createGain();
+      audioGain.gain.value = 0.8;
+      audioGain.connect(audioContext.destination);
+    }
+    return audioContext;
+  }
+
+  async function resumeAudio() {
+    const context = getAudioContext();
+    if (context.state === "suspended") await context.resume();
+  }
+
+  function loadSounds() {
+    if (!soundPromise) {
+      soundPromise = (async () => {
+        const context = getAudioContext();
+        soundBuffers = await Promise.all(
+          ["ui_select.ogg", "ui_select_reversed.ogg"].map(async (file) => {
+            const response = await fetch(`static/${file}`);
+            if (!response.ok) throw new Error(`Sound request failed: ${response.status}`);
+            return context.decodeAudioData(await response.arrayBuffer());
+          })
+        );
+      })().catch((error) => {
+        soundPromise = null;
+        console.warn("Failed to load sounds", error);
+      });
+    }
+    return soundPromise;
+  }
+
+  async function playSound({ playbackRate = 1, reverse = false } = {}) {
     try {
-      const response = await fetch("SITELIST.json");
-      appState.siteData = await response.json();
-    } catch (error) {
-      console.error("Failed to load site data:", error);
-    }
+      const context = getAudioContext();
+      if (context.state !== "running" || !soundBuffers) await Promise.all([resumeAudio(), loadSounds()]);
+      if (!soundBuffers) return;
+      const source = context.createBufferSource();
+      source.buffer = soundBuffers[reverse ? 1 : 0];
+      source.playbackRate.value = playbackRate;
+      source.connect(audioGain);
+      source.start();
+    } catch {}
   }
 
-  function setupBubbleElements() {
-    elements.bubbles = document.querySelectorAll(".bubble");
-    elements.bubbles.forEach((bubble) => {
-      bubble.style.cursor = "inherit";
-      bubble.addEventListener("click", handleBubbleClick);
-    });
-  }
-
-  function setupEventListeners() {
-    document.addEventListener("click", handleDocumentClick);
-    document.addEventListener("keydown", handleKeyDown);
-  }
-
-  async function initializeAudioContext() {
-    if (!appState.audioContext) {
-      appState.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    }
-    if (appState.audioContext.state === "suspended") {
-      await appState.audioContext.resume();
-    }
-  }
-
-  async function loadSelectSound() {
-    if (appState.selectSoundBuffer) return;
-
-    try {
-      const response = await fetch("static/ui_select.ogg");
-      const arrayBuffer = await response.arrayBuffer();
-      appState.selectSoundBuffer = await appState.audioContext.decodeAudioData(arrayBuffer);
-    } catch (error) {
-      console.warn("Failed to load select sound", error);
-    }
-  }
-
-  async function playSelectSound() {
-    try {
-      await initializeAudioContext();
-      await loadSelectSound();
-
-      if (appState.selectSoundBuffer) {
-        const source = appState.audioContext.createBufferSource();
-        const gainNode = appState.audioContext.createGain();
-
-        source.buffer = appState.selectSoundBuffer;
-        gainNode.gain.value = 0.8;
-        source.connect(gainNode);
-        gainNode.connect(appState.audioContext.destination);
-        source.start();
+  // Play on press for selection/new tabs, on activation for same-tab navigation
+  function handleLinkEvent(event) {
+    if (event.button !== 0 || event.shiftKey || event.altKey) return;
+    const pressing = event.type === "pointerdown";
+    const keyboard = !pressing && event.detail === 0;
+    if (event.ctrlKey || event.metaKey) {
+      if (pressing || keyboard) playSound({ playbackRate: 1.25 });
+    } else if (pressing) {
+      if (this !== urlDisplay && this !== selected) playSound();
+    } else if (this === urlDisplay || keyboard || this === selected) {
+      playSound({ reverse: true });
+      if (this !== urlDisplay) {
+        const bounds = grid.getBoundingClientRect();
+        grid.style.transformOrigin = `${window.innerWidth / 2 - bounds.left}px ${window.innerHeight / 2 - bounds.top}px`;
+        grid.classList.add("departing");
+        clearSelection();
       }
-    } catch (err) {
+    } else {
+      event.preventDefault();
+      selectBubble(this, false);
     }
   }
 
-  function clearAllTimeouts() {
-    if (appState.timeouts.typewriter) {
-      clearTimeout(appState.timeouts.typewriter);
-      appState.timeouts.typewriter = null;
+  function clearTypewriter(hide = true) {
+    clearTimeout(typewriterTimer);
+    urlText.textContent = "";
+    if (hide) {
+      urlDisplay.classList.remove("visible");
+      urlDisplay.removeAttribute("href");
+      urlDisplay.removeAttribute("aria-label");
     }
   }
 
-  function clearTypewriterEffect(shouldHide = true) {
-    if (elements.urlDisplay) {
-      if (shouldHide) {
-        elements.urlDisplay.classList.remove("visible");
-      }
-      elements.urlDisplay.textContent = "";
-    }
-    clearAllTimeouts();
-  }
-
-  function selectBubble(bubble, hadPreviousSelection = false) {
-    clearTypewriterEffect(!hadPreviousSelection);
-
-    appState.selectedBubble = bubble;
+  function selectBubble(bubble, playAudio = true) {
+    clearTypewriter(!selected);
+    selected = bubble;
     bubble.focus();
-    playSelectSound();
-
-    const siteKey = bubble.dataset.siteKey;
-    const rawUrl = bubble.getAttribute("href");
-    const url = appState.siteData[siteKey] || (rawUrl && rawUrl !== "#" ? rawUrl.replace(/^https?:\/\//, "") : null);
-    if (url) {
-      appState.timeouts.typewriter = setTimeout(() => startTypewriterEffect(url, appState.typewriterSpeed), 50);
-    }
+    if (playAudio) playSound();
+    const href = bubble.getAttribute("href");
+    if (!href || href === "#") return;
+    const url = href.replace(/^https?:\/\//, "");
+    urlDisplay.setAttribute("href", href);
+    urlDisplay.setAttribute("aria-label", `Open ${url}`);
+    typewriterTimer = setTimeout(() => typeUrl(url), 50);
   }
 
   function clearSelection() {
-    if (appState.selectedBubble) {
-      appState.selectedBubble.blur();
-      appState.selectedBubble = null;
-    }
-    clearTypewriterEffect(true);
+    selected?.blur();
+    selected = null;
+    clearTypewriter();
   }
 
-  function openBubbleLink(bubble) {
-    const href = bubble.getAttribute("href");
-    if (href && href !== "#") {
-      window.open(href, "_blank", "noopener,noreferrer");
+  function typeUrl(url) {
+    urlDisplay.classList.add("visible");
+    let index = 0;
+    function typeCharacter() {
+      urlText.textContent += url[index++];
+      if (index < url.length) typewriterTimer = setTimeout(typeCharacter, 30);
     }
+    typeCharacter();
   }
 
-  // Dual-click interaction: 1st click selects/types, 2nd click opens
-  function handleBubbleClick(event) {
-    event.preventDefault();
-    const bubble = this;
-
-    if (appState.selectedBubble === bubble) {
-      openBubbleLink(bubble);
-      clearSelection();
-      return;
-    }
-
-    const hadPreviousSelection = appState.selectedBubble !== null;
-    if (hadPreviousSelection) {
-        appState.selectedBubble.blur();
-    }
-    selectBubble(bubble, hadPreviousSelection);
-  }
-
-  // --- Grid Navigation Logic ---
-  function getBubblesArray() {
-    if (!elements.bubbles) {
-      elements.bubbles = document.querySelectorAll(".bubble");
-    }
-    return Array.from(elements.bubbles);
-  }
-
-  function calculateGridColumns() {
-    if (!elements.modsGrid) return 1;
-    return getComputedStyle(elements.modsGrid).gridTemplateColumns.split(" ").length;
-  }
-
-  function getNextBubbleIndex(currentIndex, direction, bubblesCount, cols) {
+  function nextBubbleIndex(index, direction, columns) {
+    const count = bubbles.length;
     switch (direction) {
       case "ArrowLeft":
-        return currentIndex > 0 ? currentIndex - 1 : bubblesCount - 1;
+        return (index + count - 1) % count;
       case "ArrowRight":
-        return currentIndex < bubblesCount - 1 ? currentIndex + 1 : 0;
+        return (index + 1) % count;
       case "ArrowUp":
-        let upIndex = currentIndex - cols;
-        if (upIndex < 0) {
-          upIndex = currentIndex + Math.floor((bubblesCount - 1) / cols) * cols;
-          if (upIndex >= bubblesCount) upIndex -= cols;
-        }
-        return upIndex;
+        return index >= columns ? index - columns : index + Math.floor((count - 1 - index) / columns) * columns;
       case "ArrowDown":
-        let downIndex = currentIndex + cols;
-        return downIndex >= bubblesCount ? currentIndex % cols : downIndex;
+        return index + columns < count ? index + columns : index % columns;
       default:
-        return currentIndex;
+        return index;
     }
-  }
-
-  function navigateGrid(direction) {
-    const bubblesArray = getBubblesArray();
-    const currentIndex = bubblesArray.indexOf(document.activeElement);
-
-    if (currentIndex === -1) {
-      if (bubblesArray[0]) selectBubble(bubblesArray[0]);
-      return;
-    }
-
-    const cols = calculateGridColumns();
-    const newIndex = getNextBubbleIndex(currentIndex, direction, bubblesArray.length, cols);
-    const newElement = bubblesArray[newIndex];
-
-    if (newElement) {
-      const hadPreviousSelection = appState.selectedBubble !== null;
-      selectBubble(newElement, hadPreviousSelection);
-    }
-  }
-
-  function handleDocumentClick(event) {
-    if (!event.target.closest(".bubble")) {
-      clearSelection();
-    }
-  }
-
-  function handleKeyDown(event) {
-    if (event.key === "Escape") {
-      clearSelection();
-    } else if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(event.key)) {
-      event.preventDefault();
-      navigateGrid(event.key);
-    } else if (event.key === "Enter" && appState.selectedBubble) {
-      event.preventDefault();
-      openBubbleLink(appState.selectedBubble);
-    }
-  }
-
-  // --- Typewriter Logic ---
-  function startTypewriterEffect(text, speed = 50) {
-    if (!elements.urlDisplay) return;
-
-    clearAllTimeouts();
-    elements.urlDisplay.textContent = "";
-    elements.urlDisplay.classList.add("visible");
-
-    let charIndex = 0;
-
-    function typeNextCharacter() {
-      if (charIndex < text.length) {
-        elements.urlDisplay.textContent += text.charAt(charIndex);
-        charIndex++;
-        appState.timeouts.typewriter = setTimeout(typeNextCharacter, speed);
-      }
-    }
-
-    typeNextCharacter();
   }
 });
