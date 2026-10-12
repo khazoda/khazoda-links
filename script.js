@@ -95,12 +95,10 @@ document.addEventListener("DOMContentLoaded", () => {
       if (this !== urlDisplay && this !== selected) playSound();
     } else if (this === urlDisplay || keyboard || this === selected) {
       playSound({ reverse: true });
-      if (this !== urlDisplay) {
-        const bounds = grid.getBoundingClientRect();
-        grid.style.transformOrigin = `${window.innerWidth / 2 - bounds.left}px ${window.innerHeight / 2 - bounds.top}px`;
-        grid.classList.add("departing");
-        clearSelection();
-      }
+      const bounds = grid.getBoundingClientRect();
+      grid.style.transformOrigin = `${window.innerWidth / 2 - bounds.left}px ${window.innerHeight / 2 - bounds.top}px`;
+      grid.classList.add("departing");
+      if (this !== urlDisplay) clearSelection();
     } else {
       event.preventDefault();
       selectBubble(this, false);
