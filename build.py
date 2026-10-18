@@ -50,7 +50,7 @@ def main():
         url = escape(mod["modrinth"])
         bubbles.append(
             f'<div><a class="bubble{secondary}" href="{url}" data-name="{name}" rel="noopener noreferrer"{attributes}>'
-            f'<img class="icon" src="{image}" alt="{name}" /></a>'
+            f'<img class="icon" src="{image}" alt="{name}" width="64" height="64" /></a>'
             f'<noscript><nav class="fallback-links" aria-label="More links for {name}">{fallback}</nav></noscript></div>'
         )
 
@@ -75,7 +75,7 @@ def main():
 
     # write the page and copy assets
     (output / "index.html").write_text(html, encoding="utf-8")
-    for filename in ("script.js", "sound.js", "style.css", "controls.css", "favicon.ico", "CNAME"):
+    for filename in ("script.js", "sound.js", "style.css", "controls.css", "favicon.ico", "robots.txt", "sitemap.xml", "CNAME"):
         shutil.copy2(ROOT / filename, output / filename)
     shutil.copytree(ROOT / "static", output / "static")
 

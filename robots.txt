@@ -1,0 +1,4 @@
+User-agent: *
+Disallow:
+
+Sitemap: https://mods.khazoda.com/sitemap.xml
