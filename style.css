@@ -1,11 +1,113 @@
+@font-face {
+  font-family: Fredoka;
+  src: url("static/fonts/fredoka.woff2") format("woff2");
+  font-weight: 500;
+  font-display: swap;
+}
+
+html {
+  --cursor-default: url("static/pointer.cur") 8 2, default;
+  --cursor-action: url("static/pointer_blue.cur") 10 1, var(--cursor-default);
+  cursor: var(--cursor-default);
+}
+
+*,
+::before,
+::after {
+  cursor: inherit;
+}
+
 body {
+  position: relative;
+  box-sizing: border-box;
   margin: 0;
+  padding-bottom: 36px;
   font-family: sans-serif;
   background: #eddfd0;
   flex-direction: column;
   justify-content: center;
-  height: 100svh;
-  cursor: url("static/pointer.cur"), auto;
+  min-height: 100svh;
+}
+
+footer {
+  position: absolute;
+  bottom: 12px;
+  font: 11px/1.4 sans-serif;
+  color: #8c8175;
+  text-align: center;
+}
+
+.mod-heading {
+  contain: inline-size;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 120px;
+  align-self: stretch;
+  align-items: end;
+  gap: 16px;
+  min-height: 88px;
+  margin: 0 8px 14px;
+}
+
+#mod-name {
+  min-width: 0;
+  align-content: end;
+  margin: 0;
+  font:
+    500 40px/1.02 Fredoka,
+    ui-rounded,
+    sans-serif;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+  opacity: 0;
+  transition: opacity 0.1s ease;
+}
+
+#mod-name.visible {
+  opacity: 1;
+}
+
+#mod-name > span {
+  display: inline-block;
+  white-space: nowrap;
+  paint-order: stroke fill;
+  filter: drop-shadow(0 1px 1.5px #40362d66);
+  transform-origin: bottom center;
+  animation: name-leave 0.1s ease-in both;
+}
+
+#mod-name > span > span {
+  display: inline-block;
+  -webkit-text-stroke: 5px #fff3d9;
+}
+
+#mod-name.visible > span {
+  animation: name-arrive 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--word) * 25ms);
+}
+
+@keyframes name-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(1.04, 0.88);
+  }
+  45% {
+    opacity: 1;
+    transform: translateY(-2px) scale(0.98, 1.05);
+  }
+  75% {
+    transform: translateY(0.5px) scale(1.01, 0.99);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes name-leave {
+  to {
+    opacity: 0;
+    transform: translateY(-2px) scale(1.02, 0.96);
+  }
 }
 
 body,
@@ -17,13 +119,15 @@ body,
 }
 
 #url-display,
+#quicklinks,
 #mods-grid {
   background: #f0efe1;
   outline: 2px solid #f4f4e9;
-  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.25);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
 }
 
 #url-display,
+#quicklinks,
 #mods-grid,
 .bubble,
 .bubble::after {
@@ -42,25 +146,25 @@ body,
   gap: 12px;
   font: bold 16px/40px monospace;
   color: #4a4a4a;
-  cursor:
-    url("static/pointer_blue.cur") 10 1,
-    pointer;
   opacity: 0;
   visibility: hidden;
   transition:
-    opacity 0.3s ease,
+    opacity 0.2s ease,
     transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
   padding: 0 15px;
   box-sizing: border-box;
 }
 
-#url-display.visible {
+#mods-panel.selected :is(#url-display, #quicklinks) {
   opacity: 1;
   visibility: visible;
 }
 
-#url-display:hover,
-#url-display:focus-visible {
+#url-display:is(:hover, :focus-visible) {
+  transform: scale(1.01);
+}
+
+#quicklinks:is(:hover, :focus-within) {
   transform: scale(1.03);
 }
 
@@ -80,15 +184,19 @@ body,
   white-space: nowrap;
 }
 
+.url-logo,
 .url-arrow {
   width: 20px;
   height: 20px;
   flex-shrink: 0;
-  color: #e3732d;
+}
+
+.url-arrow {
+  color: #1bd96a;
   transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-#url-display.ctrl-held .url-arrow {
+#mods-panel.ctrl-held .url-arrow {
   transform: rotate(-45deg);
 }
 
@@ -110,6 +218,162 @@ body,
 }
 
 /* Mod grid */
+#quicklinks {
+  --links: 3;
+  display: flex;
+  justify-self: end;
+  justify-content: flex-end;
+  width: calc(var(--links) * 38px + 6px);
+  box-sizing: border-box;
+  gap: 6px;
+  padding: 6px;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.2s ease,
+    transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+#quicklinks:has([data-link="curseforge"][hidden]) {
+  --links: 2;
+}
+
+#quicklinks [data-link="modrinth"] {
+  display: none;
+}
+
+#quicklinks.hopping a {
+  animation: quicklink-hop 0.24s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation-delay: 100ms;
+}
+
+#quicklinks.hopping a:nth-child(2) {
+  animation-delay: 125ms;
+}
+
+#quicklinks.hopping a:nth-child(3) {
+  animation-delay: 150ms;
+}
+
+#quicklinks.hopping a:nth-child(4) {
+  animation-delay: 175ms;
+}
+
+@keyframes quicklink-hop {
+  40% {
+    translate: 0 -4px;
+  }
+}
+
+.quicklink {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  flex-shrink: 0;
+  height: 32px;
+  border-radius: 6px;
+  transition: background 0.15s ease;
+}
+
+.quicklink::after {
+  content: "\2197";
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  font: bold 12px/1 sans-serif;
+  color: #1bd96a;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+
+.quicklink::before {
+  content: attr(data-label) / "";
+  position: absolute;
+  bottom: calc(100% + 16px);
+  z-index: 4;
+  padding: 7px 9px;
+  border-radius: 6px;
+  background: #746f65;
+  color: #fff8eb;
+  box-shadow: 0 2px 5px #0002;
+  font: 12px/1.2 sans-serif;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  translate: 0 3px;
+  transition:
+    opacity 0.1s ease,
+    translate 0.1s ease;
+}
+
+.quicklink:focus-visible::before {
+  opacity: 1;
+  translate: none;
+}
+
+@media (hover: hover) {
+  .quicklink:hover::before {
+    opacity: 1;
+    translate: none;
+  }
+}
+
+#mods-panel.ctrl-held .quicklink::after {
+  opacity: 1;
+}
+
+#quicklinks a[hidden] {
+  display: none;
+}
+
+.quicklink:is(:hover, :focus-visible) {
+  background: #fff;
+}
+
+#quicklinks img {
+  width: 24px;
+  height: 24px;
+}
+
+.fallback-links {
+  display: flex;
+  justify-content: center;
+  gap: 3px;
+  margin: 8px 0;
+}
+
+.fallback-links a {
+  width: 24px;
+  height: 28px;
+  background: #fff6;
+}
+
+.quicklink:focus-visible {
+  outline: 2px solid #52c66f;
+  outline-offset: 2px;
+}
+
+.fallback-links img {
+  width: 18px;
+  height: 18px;
+}
+
+.quicklink img {
+  display: block;
+  object-fit: contain;
+}
+
+#url-display,
+a[href]:not(.bubble),
+.bubble:focus,
+button,
+input,
+label {
+  cursor: var(--cursor-action);
+}
+
 #mods-panel {
   flex-direction: column;
   max-width: 100%;
@@ -132,6 +396,14 @@ body,
   min-width: 0;
 }
 
+.mod-divider {
+  grid-column: 1 / -1;
+  height: 2px;
+  margin: 3px 2px;
+  background: #d8d7c866;
+  border-radius: 1px;
+}
+
 #mods-panel.departing {
   animation: panel-exit 0.18s ease-in forwards;
   pointer-events: none;
@@ -145,18 +417,16 @@ body,
 
 .bubble {
   background: linear-gradient(180deg, #fff 75%, #e6e6e6 100%);
-  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   justify-content: center;
   width: 79px;
   height: 79px;
   color: #222;
   position: relative;
-  cursor: inherit;
   transition:
     transform 0.1s ease-out,
     box-shadow 0.1s ease-out,
     outline 0.1s ease-out;
-  will-change: transform;
   user-select: none;
   -webkit-user-select: none;
   -webkit-user-drag: none;
@@ -165,54 +435,48 @@ body,
 .bubble.secondary {
   opacity: 0.5;
 }
-.bubble.secondary:is(:focus, :active, :focus-within) {
+.bubble.secondary:active {
   opacity: 1;
 }
 
 .bubble:hover {
   transform: scale(1.05) translateY(-2px);
-  box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.225);
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.225);
 }
 
 .bubble:active {
   transform: scale(0.95) translateY(2px);
-  box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.15);
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.15);
 }
 
-.bubble:focus {
+/* Keyboard follows focus; mouse and touch keep the selected mod highlighted. */
+.bubble:is(:focus, .selected:where(#mods-panel:not(.keyboard-navigation) *)) {
+  opacity: 1;
   outline: 5px solid #52c66f;
   box-shadow:
     0 0 0 4px rgba(0, 0, 0, 0.1),
     inset 0 0 0 1px rgba(255, 255, 255, 0.3),
     0 4px 8px 2px rgba(82, 198, 111, 0.65),
-    0 8px 16px 0 rgba(82, 198, 111, 0.45);
-  cursor:
-    url("static/pointer_blue.cur") 10 1,
-    pointer;
+    0 8px 16px rgba(82, 198, 111, 0.45);
+  &::before {
+    content: "";
+    position: absolute;
+    top: -4px;
+    left: 4px;
+    width: 20px;
+    height: 2px;
+    background: radial-gradient(circle at 30% 30%, #fff 0%, rgba(255, 255, 255, 0.4) 60%, transparent 100%);
+    pointer-events: none;
+    z-index: 2;
+    filter: blur(2px);
+  }
 }
 
-/* Button shine */
-.bubble:focus::before,
 .bubble::after {
   content: "";
   position: absolute;
-}
-
-.bubble:focus::before {
-  top: -4px;
-  left: 4px;
-  width: 20px;
-  height: 2px;
-  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.4) 60%, transparent 100%);
-  pointer-events: none;
-  z-index: 2;
-  filter: blur(2px);
-}
-
-.bubble::after {
   z-index: 1;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   background: linear-gradient(200deg, rgba(255, 251, 185, 0.25) 0%, transparent 30%, rgba(0, 0, 0, 0.025) 80%);
 }
 
@@ -220,13 +484,6 @@ body,
   width: 64px;
   height: 64px;
   border-radius: 5px;
-  overflow: hidden;
-  box-shadow: inset 0 1px 5px 0 rgba(0, 0, 0, 0.1);
-}
-
-.bubble .icon img {
-  width: 100%;
-  height: 100%;
   object-fit: cover;
   -webkit-user-drag: none;
   pointer-events: none;
@@ -244,6 +501,20 @@ body,
 }
 
 @media (max-width: 415px) {
+  .mod-heading {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+  #mod-name {
+    min-height: 88px;
+  }
+  #quicklinks {
+    width: 100%;
+    justify-content: center;
+  }
+  #quicklinks [data-link="modrinth"]:not([hidden]) {
+    display: grid;
+  }
   #url-display {
     display: none;
   }
@@ -259,6 +530,10 @@ body,
 }
 
 @media (max-width: 252px) {
+  #quicklinks {
+    display: grid;
+    grid-template-columns: repeat(2, 32px);
+  }
   body {
     justify-content: flex-start;
   }
@@ -267,18 +542,11 @@ body,
   }
 }
 
-@media (max-width: 198px) {
-  #mods-grid {
-    max-width: 80px;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
-  #url-display,
-  .url-arrow {
-    transition: none;
-  }
-  #mods-panel.departing {
-    animation: none;
+  *,
+  ::before,
+  ::after {
+    transition: none !important;
+    animation: none !important;
   }
 }

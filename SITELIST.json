@@ -1,19 +1,129 @@
 {
-  "platform_plushables": "modrinth.com/mod/plushables",
-  "platform_basicweapons": "modrinth.com/mod/basicweapons",
-  "platform_bronze": "modrinth.com/mod/bronze",
-  "platform_basicstorage": "modrinth.com/mod/basicstorage",
-  "platform_breakerplacer": "modrinth.com/mod/breakerplacer",
-  "platform_heirlooms": "modrinth.com/mod/heirlooms",
-
-  "platform_hookaduck": "modrinth.com/mod/hookaduck",
-  "platform_kreebles": "modrinth.com/mod/kreebles",
-  "platform_helpfulcampfires": "modrinth.com/mod/helpfulcampfires",
-  "platform_plastar": "modrinth.com/mod/plastar",
-  "platform_beefandblade": "modrinth.com/mod/beefandblade",
-  "platform_dwayne": "modrinth.com/mod/dwayne",
-
-  "platform_windchime": "modrinth.com/mod/windchime",
-  "platform_hbhap": "modrinth.com/mod/hbhap",
-  "platform_bzl": "modrinth.com/mod/bzl"
+  "plushables": {
+    "name": "Plushables",
+    "modrinth": "https://modrinth.com/mod/plushables",
+    "curseforge": "https://curseforge.com/minecraft/mc-mods/plushables",
+    "github": "https://github.com/khazoda-mods/plushables",
+    "website": "https://khazoda.com/#plushables",
+    "colors": ["#f04300", "#ffac3b", "#ffdd46", "#9fff05", "#0dff64", "#00f9d1", "#0098e7", "#4e3bff", "#ce16ff", "#ff16a3"]
+  },
+  "basicweapons": {
+    "name": "Basic Weapons",
+    "modrinth": "https://modrinth.com/mod/basicweapons",
+    "curseforge": "https://curseforge.com/minecraft/mc-mods/basicweapons",
+    "github": "https://github.com/khazoda-mods/basicweapons",
+    "website": "https://khazoda.com/#basicweapons",
+    "colors": ["#555555", "#555555", "#555555", "#555555", "#555555", "#4cc3ff", "#4cc3ff", "#4cc3ff", "#4cc3ff", "#4cc3ff", "#4cc3ff", "#4cc3ff"]
+  },
+  "bronze": {
+    "name": "Bronze",
+    "modrinth": "https://modrinth.com/mod/bronze",
+    "curseforge": "https://curseforge.com/minecraft/mc-mods/bronze",
+    "github": "https://github.com/khazoda-mods/bronze",
+    "website": "https://khazoda.com/#bronze",
+    "colors": ["#dfa52e"]
+  },
+  "basicstorage": {
+    "name": "Basic Storage",
+    "modrinth": "https://modrinth.com/mod/basicstorage",
+    "curseforge": "https://curseforge.com/minecraft/mc-mods/basic-storage",
+    "github": "https://github.com/Khazoda/basic-storage",
+    "website": "https://khazoda.com/#basicstorage",
+    "colors": ["#555555", "#555555", "#555555", "#555555", "#555555", "#7ac15a", "#7ac15a", "#7ac15a", "#7ac15a", "#7ac15a", "#7ac15a", "#7ac15a"]
+  },
+  "breakerplacer": {
+    "name": "Block Breaker & Block Placer",
+    "modrinth": "https://modrinth.com/mod/breakerplacer",
+    "curseforge": "https://curseforge.com/minecraft/mc-mods/breakerplacer",
+    "github": "https://github.com/khazoda-mods/breakerplacer",
+    "website": "https://khazoda.com/#breakerplacer",
+    "colors": ["#555555", "#555555", "#555555", "#555555", "#555555", "#222222", "#222222", "#222222", "#222222", "#222222", "#222222", "#222222", "#555555", "#555555", "#555555", "#555555", "#555555", "#555555", "#777777", "#777777", "#777777", "#777777", "#777777", "#777777"]
+  },
+  "heirlooms": {
+    "name": "Heirlooms",
+    "modrinth": "https://modrinth.com/mod/heirlooms",
+    "curseforge": "https://curseforge.com/minecraft/mc-mods/heirlooms",
+    "github": "https://github.com/khazoda-mods/heirlooms",
+    "website": "https://khazoda.com/#heirlooms",
+    "colors": ["#928060"]
+  },
+  "hookaduck": {
+    "name": "Hook a Duck",
+    "modrinth": "https://modrinth.com/mod/hookaduck",
+    "github": "https://github.com/Khazoda/Hook-a-Duck",
+    "website": "https://khazoda.com/#hookaduck",
+    "secondary": true,
+    "colors": ["#e9aa26", "#e9aa26", "#e9aa26", "#e9aa26", "#eabc40", "#ecc95c", "#ecc95c", "#ecc95c", "#ecc95c"]
+  },
+  "kreebles": {
+    "name": "Kreebles",
+    "modrinth": "https://modrinth.com/mod/kreebles",
+    "curseforge": "https://curseforge.com/minecraft/mc-mods/kreebles",
+    "github": "https://github.com/Khazoda/kreebles",
+    "website": "https://khazoda.com/#kreebles",
+    "secondary": true,
+    "colors": ["#22cc22", "#44aa44"]
+  },
+  "helpfulcampfires": {
+    "name": "Helpful Campfires",
+    "modrinth": "https://modrinth.com/mod/helpfulcampfires",
+    "curseforge": "https://curseforge.com/minecraft/mc-mods/helpfulcampfires",
+    "github": "https://github.com/Khazoda/helpful-campfires",
+    "website": "https://khazoda.com/#helpfulcampfires",
+    "secondary": true,
+    "colors": ["#d87d4c", "#d87d4c", "#d87d4c", "#d87d4c", "#d87d4c", "#d87d4c", "#d87d4c", "#b4553c", "#b4553c", "#b4553c", "#b4553c", "#b4553c", "#b4553c", "#b4553c", "#b4553c", "#b4553c"]
+  },
+  "plastar": {
+    "name": "Mecha Soldier PLASTAR",
+    "modrinth": "https://modrinth.com/mod/plastar",
+    "github": "https://github.com/Kneelawk/Mecha-Soldier-PLASTAR",
+    "website": "https://khazoda.com/#plastar",
+    "secondary": true,
+    "colors": ["#619afe", "#619afe", "#619afe", "#619afe", "#619afe", "#dd7025", "#dd7025", "#dd7025", "#dd7025", "#dd7025", "#dd7025", "#dd7025", "#459e54", "#459e54", "#459e54", "#459e54", "#459e54", "#459e54", "#459e54"]
+  },
+  "beefandblade": {
+    "name": "Beef & Blade",
+    "modrinth": "https://modrinth.com/mod/beefandblade",
+    "curseforge": "https://curseforge.com/minecraft/mc-mods/beef-blade",
+    "github": "https://github.com/Khazoda/beef-and-blade",
+    "website": "https://khazoda.com/#beefandblade",
+    "secondary": true,
+    "colors": ["#b2233c", "#b2233c", "#b2233c", "#b2233c", "#96421f", "#2bc4a9", "#2bc4a9", "#2bc4a9", "#2bc4a9", "#2bc4a9"]
+  },
+  "dwayne": {
+    "name": "Dwayne 'The Block' Johnson",
+    "modrinth": "https://modrinth.com/mod/dwayne",
+    "curseforge": "https://curseforge.com/minecraft/mc-mods/dwayne-the-block-johnson",
+    "github": "https://github.com/Khazoda/dwayne-the-block-johnson",
+    "website": "https://khazoda.com/#dwayne",
+    "secondary": true,
+    "colors": ["#af5c3d", "#a85637", "#a05031", "#974b2d", "#8c4427", "#853f22", "#ae6143", "#a4593b", "#9c5336", "#924c30", "#87442a", "#bb6d4d", "#b26445", "#a95d3e", "#9e5437", "#964e31", "#c47657", "#ba6d4f", "#b16648", "#a65c3f", "#9d5438", "#934d31", "#8b462c"]
+  },
+  "windchime": {
+    "name": "wind chimes",
+    "modrinth": "https://modrinth.com/mod/windchime",
+    "curseforge": "https://www.curseforge.com/minecraft/mc-mods/windchime",
+    "github": "https://github.com/rosebudmods/windchimes",
+    "website": "https://khazoda.com/#windchime",
+    "secondary": true,
+    "colors": ["#d8643d"]
+  },
+  "hbhap": {
+    "name": "Hidden Beacon HUD And Particles",
+    "modrinth": "https://modrinth.com/mod/hbhap",
+    "curseforge": "https://www.curseforge.com/minecraft/mc-mods/hbhap",
+    "github": "https://github.com/khazoda-mods/hbhap",
+    "website": "https://khazoda.com/#hbhap",
+    "secondary": true,
+    "colors": ["#38465a", "#38465a", "#38465a", "#38465a", "#38465a", "#38465a", "#7a8cd2", "#7a8cd2", "#7a8cd2", "#7a8cd2", "#7a8cd2", "#7a8cd2", "#22a29a", "#22a29a", "#22a29a", "#59b6b0", "#59b6b0", "#59b6b0", "#55adac", "#55adac", "#55adac", "#55adac", "#55adac", "#55adac", "#55adac", "#55adac", "#55adac"]
+  },
+  "bzl": {
+    "name": "Better Zombie Leaders",
+    "modrinth": "https://modrinth.com/mod/bzl",
+    "curseforge": "https://www.curseforge.com/minecraft/mc-mods/bzl",
+    "github": "https://github.com/khazoda-mods/betterzombieleaders",
+    "website": "https://khazoda.com/#bzl",
+    "secondary": true,
+    "colors": ["#3e6230", "#3e6230", "#3e6230", "#3e6230", "#3e6230", "#3e6230", "#015c5f", "#015c5f", "#015c5f", "#015c5f", "#015c5f", "#015c5f", "#272059", "#272059", "#272059", "#272059", "#272059", "#272059", "#272059"]
+  }
 }

@@ -11,23 +11,83 @@
 
     <title>Khazoda's Mod Links</title>
     <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="controls.css" />
 
     <link rel="preload" href="static/pointer.cur" as="image" />
     <link rel="preload" href="static/pointer_blue.cur" as="image" />
+    <link rel="preload" href="static/fonts/fredoka.woff2" as="font" type="font/woff2" crossorigin />
 
+    <script type="module" src="script.js"></script>
+  </head>
+  <body>
+    <button id="sound-toggle" class="corner-button" type="button" aria-label="Mute sound" aria-pressed="false" hidden>
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true">
+        <path d="M11 5 6 9H3v6h3l5 4Z" />
+        <path class="sound-waves" d="M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14" />
+        <path class="sound-cross" d="m16 9 5 6m0-6-5 6" />
+      </svg>
+    </button>
+    <button id="help-toggle" class="corner-button" type="button" aria-label="Keyboard controls" aria-haspopup="dialog" hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+        <rect x="2" y="5" width="20" height="14" rx="3" />
+        <path d="M6 9h.01M10 9h.01M14 9h.01M18 9h.01M6 12h.01M10 12h.01M14 12h.01M18 12h.01M8 15h8" />
+      </svg>
+    </button>
+    <p id="keyboard-instructions" class="sr-only" hidden>
+      Use arrow keys to preview mods, N for their links, and Enter or Space to open a focused link. Tab works normally. Press K or use
+      Keyboard controls for help or to disable letter shortcuts.
+    </p>
+    <p id="keyboard-status" class="sr-only" role="status"></p>
+    <dialog id="keyboard-help" aria-labelledby="keyboard-title">
+      <h2 id="keyboard-title">Keyboard controls</h2>
+      <dl>
+        <dt>Arrow keys</dt>
+        <dd>Navigate the mod grid.</dd>
+        <dt>N / Shift + N</dt>
+        <dd>Cycle forwards / backwards through the selected mod's links.</dd>
+        <dt>Home / End</dt>
+        <dd>Jump to the first / last mod in the grid.</dd>
+        <dt>Enter / Space</dt>
+        <dd>Open the selected link. Hold Ctrl (⌘ on Mac) for a new tab.</dd>
+        <dt>Escape</dt>
+        <dd>Close quicklink preview and deselect current mod.</dd>
+        <dt>M</dt>
+        <dd>Mute or unmute sound.</dd>
+        <dt>K</dt>
+        <dd>Open or close keyboard controls.</dd>
+      </dl>
+      <div id="form-bottom-span">
+        <label><input id="shortcut-toggle" type="checkbox" checked /> Enable N, M and K shortcuts</label>
+        <form method="dialog"><button>Okay</button></form>
+      </div>
+    </dialog>
     <noscript>
       <style>
-        /* Make cursor blue on hover when JS is disabled */
+        .mod-heading,
+        #url-display {
+          display: none;
+        }
         .bubble {
-          cursor: url(static/pointer_blue.cur), auto !important;
+          cursor: var(--cursor-action);
         }
       </style>
     </noscript>
-    <script src="script.js"></script>
-  </head>
-  <body>
     <div id="mods-panel">
-      <a id="url-display">
+      <div class="mod-heading">
+        <h1 id="mod-name" aria-live="polite"></h1>
+        <nav id="quicklinks" aria-label="Selected mod quick links">
+          <!-- QUICKLINKS AUTOINSERT -->
+        </nav>
+      </div>
+      <a id="url-display" data-link="modrinth" data-label="Modrinth">
+        <img class="url-logo" src="static/sites/modrinth.svg" alt="" />
         <span id="url-text">modrinth.com/mod/<span id="url-slug"></span></span>
         <svg
           class="url-arrow"
@@ -43,102 +103,9 @@
       </a>
 
       <div id="mods-container">
-        <div id="mods-grid">
-          <a class="bubble" href="https://modrinth.com/mod/plushables" rel="noopener noreferrer" data-site-key="platform_plushables">
-            <div class="icon">
-              <img src="/static/mods/platform_plushables.webp" alt="modrinth.com/mod/plushables" />
-            </div>
-          </a>
-          <a class="bubble" href="https://modrinth.com/mod/basicweapons" rel="noopener noreferrer" data-site-key="platform_basicweapons">
-            <div class="icon">
-              <img src="/static/mods/platform_basicweapons.webp" alt="modrinth.com/mod/basicweapons" />
-            </div>
-          </a>
-          <a class="bubble" href="https://modrinth.com/mod/bronze" rel="noopener noreferrer" data-site-key="platform_bronze">
-            <div class="icon">
-              <img src="/static/mods/platform_bronze.webp" alt="modrinth.com/mod/bronze" />
-            </div>
-          </a>
-          <a class="bubble" href="https://modrinth.com/mod/basicstorage" rel="noopener noreferrer" data-site-key="platform_basicstorage">
-            <div class="icon">
-              <img src="/static/mods/platform_basicstorage.webp" alt="modrinth.com/mod/basicstorage" />
-            </div>
-          </a>
-          <a class="bubble" href="https://modrinth.com/mod/breakerplacer" rel="noopener noreferrer" data-site-key="platform_breakerplacer">
-            <div class="icon">
-              <img src="/static/mods/platform_breakerplacer.webp" alt="modrinth.com/mod/breakerplacer" />
-            </div>
-          </a>
-          <a class="bubble" href="https://modrinth.com/mod/heirlooms" rel="noopener noreferrer" data-site-key="platform_heirlooms">
-            <div class="icon">
-              <img src="/static/mods/platform_heirlooms.webp" alt="modrinth.com/mod/heirlooms" />
-            </div>
-          </a>
-
-          <a
-            class="bubble secondary"
-            href="https://modrinth.com/mod/hookaduck"
-            rel="noopener noreferrer"
-            data-site-key="platform_hookaduck">
-            <div class="icon">
-              <img src="/static/mods/platform_hookaduck.webp" alt="modrinth.com/mod/hookaduck" />
-            </div>
-          </a>
-          <a class="bubble secondary" href="https://modrinth.com/mod/kreebles" rel="noopener noreferrer" data-site-key="platform_kreebles">
-            <div class="icon">
-              <img src="/static/mods/platform_kreebles.webp" alt="modrinth.com/mod/kreebles" />
-            </div>
-          </a>
-          <a
-            class="bubble secondary"
-            href="https://modrinth.com/mod/helpfulcampfires"
-            rel="noopener noreferrer"
-            data-site-key="platform_helpfulcampfires">
-            <div class="icon">
-              <img src="/static/mods/platform_helpfulcampfires.webp" alt="modrinth.com/mod/helpfulcampfires" />
-            </div>
-          </a>
-          <a class="bubble secondary" href="https://modrinth.com/mod/plastar" rel="noopener noreferrer" data-site-key="platform_plastar">
-            <div class="icon">
-              <img src="/static/mods/platform_plastar.webp" alt="modrinth.com/mod/plastar" />
-            </div>
-          </a>
-          <a
-            class="bubble secondary"
-            href="https://modrinth.com/mod/beefandblade"
-            rel="noopener noreferrer"
-            data-site-key="platform_beefandblade">
-            <div class="icon">
-              <img src="/static/mods/platform_beefandblade.webp" alt="modrinth.com/mod/beefandblade" />
-            </div>
-          </a>
-          <a class="bubble secondary" href="https://modrinth.com/mod/dwayne" rel="noopener noreferrer" data-site-key="platform_dwayne">
-            <div class="icon">
-              <img src="/static/mods/platform_dwayne.webp" alt="modrinth.com/mod/dwayne" />
-            </div>
-          </a>
-
-          <a
-            class="bubble secondary"
-            href="https://modrinth.com/mod/windchime"
-            rel="noopener noreferrer"
-            data-site-key="platform_windchime">
-            <div class="icon">
-              <img src="/static/mods/platform_windchime.webp" alt="modrinth.com/mod/windchime" />
-            </div>
-          </a>
-          <a class="bubble secondary" href="https://modrinth.com/mod/hbhap" rel="noopener noreferrer" data-site-key="platform_hbhap">
-            <div class="icon">
-              <img src="/static/mods/platform_hbhap.webp" alt="modrinth.com/mod/hbhap" />
-            </div>
-          </a>
-          <a class="bubble secondary" href="https://modrinth.com/mod/bzl" rel="noopener noreferrer" data-site-key="platform_bzl">
-            <div class="icon">
-              <img src="/static/mods/platform_bzl.webp" alt="modrinth.com/mod/bzl" />
-            </div>
-          </a>
-        </div>
+        <div id="mods-grid" role="group" aria-label="Mods"><!-- MODS AUTOINSERT --></div>
       </div>
     </div>
+    <footer>&copy; <span id="copyright-year">2026</span> Khazoda</footer>
   </body>
 </html>

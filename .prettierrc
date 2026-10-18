@@ -10,5 +10,11 @@
   "bracketSameLine": true,
   "htmlWhitespaceSensitivity": "css",
   "singleAttributePerLine": false,
-  "endOfLine": "lf"
+  "endOfLine": "lf",
+  "overrides": [
+    {
+      "files": "SITELIST.json",
+      "options": { "printWidth": 500 }
+    }
+  ]
 } 
