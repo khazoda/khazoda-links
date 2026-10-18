@@ -120,8 +120,28 @@ window.addEventListener("blur", () => panel.classList.remove("ctrl-held"));
 window.addEventListener("pageshow", () => {
   panel.classList.remove("departing");
   panel.style.removeProperty("transform-origin");
-  clearSelection();
+  restoreSelectionFromUrl();
 });
+window.addEventListener("hashchange", restoreSelectionFromUrl);
+window.addEventListener("popstate", restoreSelectionFromUrl);
+
+function updateSelectionUrl() {
+  const url = new URL(window.location.href);
+  url.hash = selected ? encodeURIComponent(selected.dataset.modId) : "";
+  if (url.href !== window.location.href) history.replaceState(history.state, "", url);
+}
+
+function restoreSelectionFromUrl() {
+  let modId;
+  try {
+    modId = decodeURIComponent(window.location.hash.slice(1));
+  } catch {
+    modId = "";
+  }
+  const bubble = bubbles.find((bubble) => bubble.dataset.modId === modId);
+  if (bubble) selectBubble(bubble, false, { focus: false, updateUrl: false });
+  else clearSelection({ focus: false, updateUrl: false });
+}
 
 function updateCtrlState(event) {
   panel.classList.toggle("ctrl-held", event.ctrlKey);
@@ -148,9 +168,10 @@ function handleLinkEvent(event) {
   }
 }
 
-function selectBubble(bubble, playAudio = true) {
+function selectBubble(bubble, playAudio = true, { focus = true, updateUrl = true } = {}) {
   if (selected === bubble) {
-    bubble.focus();
+    if (focus) bubble.focus();
+    if (updateUrl) updateSelectionUrl();
     return;
   }
   clearTimeout(typewriterTimer);
@@ -160,7 +181,7 @@ function selectBubble(bubble, playAudio = true) {
   selected = bubble;
   bubble.classList.add("selected");
   updateName(bubble.dataset.name, bubble.dataset.colors);
-  bubble.focus();
+  if (focus) bubble.focus();
   if (playAudio) playSound();
   const href = bubble.getAttribute("href");
   for (const link of modLinks) {
@@ -177,12 +198,16 @@ function selectBubble(bubble, playAudio = true) {
     quicklinks.classList.add("hopping");
   }
   typeUrl(href.split("/").pop());
+  if (updateUrl) updateSelectionUrl();
 }
 
-function clearSelection() {
-  if (!selected) return;
+function clearSelection({ focus = true, updateUrl = true } = {}) {
+  if (!selected) {
+    if (updateUrl) updateSelectionUrl();
+    return;
+  }
   selected.classList.remove("selected");
-  selected.blur();
+  if (focus) selected.blur();
   selected = null;
   updateName("");
   clearTimeout(typewriterTimer);
@@ -190,6 +215,7 @@ function clearSelection() {
   panel.classList.remove("selected");
   urlDisplay.removeAttribute("aria-label");
   for (const link of modLinks) link.removeAttribute("href");
+  if (updateUrl) updateSelectionUrl();
 }
 
 function updateName(name, colors = "#496950") {

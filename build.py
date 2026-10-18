@@ -2,6 +2,7 @@ import json
 import shutil
 from html import escape
 from pathlib import Path
+from urllib.parse import urlencode
 
 ROOT = Path(__file__).resolve().parent
 PLATFORMS = {
@@ -9,7 +10,12 @@ PLATFORMS = {
     "curseforge": ("CurseForge", "curseforge.svg"),
     "github": ("GitHub", "github.svg"),
     "website": ("khazoda.com", "khazoda.png"),
+    "bluesky": ("Bluesky", "bluesky.svg"),
 }
+
+
+def bluesky_url(mod_id):
+    return "https://bsky.app/search?" + urlencode({"q": f"from:@khazoda.com {mod_id}"})
 
 
 def quicklink(site, url=None):
@@ -29,12 +35,13 @@ def main():
 
     # build mod grid, including links for users with js disabled
     for mod_id, mod in mods.items():
+        mod["bluesky"] = bluesky_url(mod_id)
         name = escape(mod["name"])
         image = f"static/mods/platform_{mod_id}.webp"
         if not (ROOT / image).is_file():
             raise FileNotFoundError(f"Missing icon: {image}")
         colors = escape(", ".join(mod["colors"]))
-        attributes = f' data-colors="{colors}"'
+        attributes = f' data-mod-id="{escape(mod_id)}" data-colors="{colors}"'
         fallback = ""
         for site in PLATFORMS:
             if site == "modrinth" or not mod.get(site):

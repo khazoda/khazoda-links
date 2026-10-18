@@ -40,7 +40,7 @@ footer {
 .mod-heading {
   contain: inline-size;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 120px;
+  grid-template-columns: minmax(0, 1fr) 158px;
   align-self: stretch;
   align-items: end;
   gap: 16px;
@@ -219,7 +219,7 @@ body,
 
 /* Mod grid */
 #quicklinks {
-  --links: 3;
+  --links: 4;
   display: flex;
   justify-self: end;
   justify-content: flex-end;
@@ -235,7 +235,7 @@ body,
 }
 
 #quicklinks:has([data-link="curseforge"][hidden]) {
-  --links: 2;
+  --links: 3;
 }
 
 #quicklinks [data-link="modrinth"] {
@@ -257,6 +257,10 @@ body,
 
 #quicklinks.hopping a:nth-child(4) {
   animation-delay: 175ms;
+}
+
+#quicklinks.hopping a:nth-child(5) {
+  animation-delay: 200ms;
 }
 
 @keyframes quicklink-hop {
