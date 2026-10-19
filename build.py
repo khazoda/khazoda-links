@@ -82,7 +82,7 @@ def main():
 
     # write the page and copy assets
     (output / "index.html").write_text(html, encoding="utf-8")
-    for filename in ("script.js", "sound.js", "style.css", "controls.css", "favicon.ico", "robots.txt", "sitemap.xml", "CNAME"):
+    for filename in ("script.js", "sound.js", "cursor.js", "style.css", "controls.css", "favicon.ico", "robots.txt", "sitemap.xml", "CNAME"):
         shutil.copy2(ROOT / filename, output / filename)
     shutil.copytree(ROOT / "static", output / "static")
 

@@ -1,4 +1,5 @@
 import { playSound } from "./sound.js";
+import "./cursor.js";
 
 document.getElementById("copyright-year").textContent = new Date().getFullYear();
 
@@ -11,6 +12,7 @@ const soundToggle = document.getElementById("sound-toggle");
 const keyboardHelp = document.getElementById("keyboard-help");
 const helpToggle = document.getElementById("help-toggle");
 const shortcutToggle = document.getElementById("shortcut-toggle");
+const cursorToggle = document.getElementById("cursor-toggle");
 const quicklinks = document.getElementById("quicklinks");
 const modLinks = [urlDisplay, ...quicklinks.querySelectorAll("a")];
 const bubbles = [...grid.querySelectorAll(".bubble")];
@@ -18,9 +20,19 @@ const bubbles = [...grid.querySelectorAll(".bubble")];
 let selected = null;
 let typewriterTimer, nameTimer;
 
-try {
-  shortcutToggle.checked = localStorage.getItem("keyboardShortcuts") !== "false";
-} catch {}
+for (const [toggle, key] of [
+  [shortcutToggle, "keyboardShortcuts"],
+  [cursorToggle, "cursorAnimations"],
+]) {
+  try {
+    toggle.checked = localStorage.getItem(key) !== "false";
+  } catch {}
+  toggle.addEventListener("change", () => {
+    try {
+      localStorage.setItem(key, toggle.checked);
+    } catch {}
+  });
+}
 
 helpToggle.hidden = false;
 new ResizeObserver(fitName).observe(grid);
@@ -35,12 +47,6 @@ keyboardHelp.addEventListener("click", (event) => {
   const { left, right, top, bottom } = keyboardHelp.getBoundingClientRect();
   const outside = event.clientX < left || event.clientX > right || event.clientY < top || event.clientY > bottom;
   if (event.target === keyboardHelp && outside) keyboardHelp.close();
-});
-
-shortcutToggle.addEventListener("change", () => {
-  try {
-    localStorage.setItem("keyboardShortcuts", shortcutToggle.checked);
-  } catch {}
 });
 
 for (const link of [...bubbles, ...modLinks]) {

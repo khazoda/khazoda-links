@@ -6,8 +6,8 @@
 }
 
 html {
-  --cursor-default: url("static/pointer.cur") 8 2, default;
-  --cursor-action: url("static/pointer_blue.cur") 10 1, var(--cursor-default);
+  --cursor-default: url("static/pointer.svg") 15 3, default;
+  --cursor-action: url("static/pointer_blue.svg") 15 3, var(--cursor-default);
   cursor: var(--cursor-default);
 }
 
@@ -15,6 +15,63 @@ html {
 ::before,
 ::after {
   cursor: inherit;
+}
+
+html:has(#wii-cursor:popover-open) {
+  --cursor-default: none;
+  --cursor-action: none;
+}
+
+html:has(:is(a[href], button, input, label):hover) {
+  --cursor-hover: 1;
+}
+
+#wii-cursor {
+  display: none;
+  position: fixed;
+  inset: 0 auto auto 0;
+  width: 0;
+  height: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  overflow: visible;
+  background: transparent;
+  pointer-events: none;
+  user-select: none;
+  transform-origin: 0 0;
+  will-change: translate, rotate;
+}
+
+#wii-cursor:popover-open {
+  display: block;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html:has(#cursor-toggle:checked) #wii-cursor {
+    transition: rotate 260ms ease-out;
+  }
+  html:has(#cursor-toggle:checked) #wii-cursor.moving {
+    transition-duration: 45ms;
+  }
+}
+
+#wii-cursor::backdrop {
+  background: transparent;
+  pointer-events: none;
+}
+
+#wii-cursor img {
+  position: absolute;
+  /* anchor to svg fingertip */
+  left: -15.3px;
+  top: -3.1px;
+  -webkit-user-drag: none;
+  opacity: calc(1 - var(--cursor-hover, 0));
+}
+
+#wii-cursor img + img {
+  opacity: var(--cursor-hover, 0);
 }
 
 body {
@@ -35,6 +92,10 @@ footer {
   font: 11px/1.4 sans-serif;
   color: #8c8175;
   text-align: center;
+}
+
+footer a {
+  color: inherit;
 }
 
 .mod-heading {
@@ -343,8 +404,9 @@ body,
 
 .fallback-links {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
-  gap: 3px;
+  gap: 4px;
   margin: 8px 0;
 }
 
@@ -369,9 +431,7 @@ body,
   object-fit: contain;
 }
 
-#url-display,
-a[href]:not(.bubble),
-.bubble:focus,
+a[href],
 button,
 input,
 label {
@@ -408,7 +468,8 @@ label {
   border-radius: 1px;
 }
 
-#mods-panel.departing {
+#mods-panel.departing,
+html:has(#mods-panel.departing) #wii-cursor {
   animation: panel-exit 0.18s ease-in forwards;
   pointer-events: none;
 }

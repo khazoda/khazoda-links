@@ -1,0 +1,103 @@
+const cursor = document.getElementById("wii-cursor");
+const animationToggle = document.getElementById("cursor-toggle");
+const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
+const images = [...cursor.children];
+let lastMove, settleTimer, clickAnimation;
+
+function animationsEnabled() {
+  return animationToggle.checked && !reducedMotion.matches;
+}
+
+function clamp(value, limit) {
+  return Math.max(-limit, Math.min(limit, value));
+}
+
+function resetMotion() {
+  clearTimeout(settleTimer);
+  clickAnimation?.cancel();
+  cursor.classList.remove("moving");
+  cursor.style.rotate = "0deg";
+}
+
+function hideCursor() {
+  if (!lastMove) return;
+  resetMotion();
+  lastMove = null;
+  cursor.hidePopover();
+}
+
+function positionCursor(event) {
+  cursor.style.translate = `${event.clientX}px ${event.clientY}px`;
+}
+
+function moveCursor(event) {
+  if (event.pointerType !== "mouse") return hideCursor();
+  // keep native cursor until both cursor SVGs have loaded
+  if (!images.every((image) => image.complete && image.naturalWidth > 0)) return;
+
+  const animated = animationsEnabled();
+  const elapsed = event.timeStamp - (lastMove?.time ?? 0);
+  let speed = 0;
+  if (animated && lastMove && elapsed > 0 && elapsed < 100) {
+    speed = clamp((event.clientX - lastMove.x) / Math.max(elapsed, 1), 3);
+  }
+
+  // leaning animation
+  const acceleration = speed - (lastMove?.speed ?? 0);
+  const lean = clamp(speed * 20 + acceleration * 6, 26);
+  const restingAngle = ((event.clientX / innerWidth) * 2 - 1) * 30;
+  lastMove = { x: event.clientX, time: event.timeStamp, speed };
+
+  positionCursor(event);
+  cursor.classList.toggle("moving", animated);
+  cursor.style.rotate = `${animated ? restingAngle + lean : 0}deg`;
+  clearTimeout(settleTimer);
+  if (animated) {
+    settleTimer = setTimeout(() => {
+      cursor.classList.remove("moving");
+      cursor.style.rotate = `${restingAngle}deg`;
+    }, 60);
+  }
+
+  if (!cursor.matches(":popover-open")) cursor.showPopover();
+}
+
+function pressCursor(event) {
+  if (!lastMove || !animationsEnabled() || event.button !== 0 || event.detail === 0) return;
+  if (!event.target.closest("a[href], button, input, label")) return;
+
+  clickAnimation?.cancel();
+  clickAnimation = cursor.animate([{ scale: "1" }, { scale: "0.95 0.9", offset: 0.3 }, { scale: "1" }], {
+    duration: 180,
+    easing: "ease-out",
+  });
+}
+
+if (cursor.showPopover) {
+  document.addEventListener("pointermove", moveCursor);
+  document.addEventListener("click", pressCursor);
+  document.addEventListener("pointerrawupdate", (event) => {
+    if (lastMove && event.pointerType === "mouse") positionCursor(event);
+  });
+
+  // reopen above dialog when it enters the top z layer
+  for (const dialog of document.querySelectorAll("dialog")) {
+    dialog.addEventListener("toggle", () => {
+      if (!lastMove) return;
+      cursor.hidePopover();
+      cursor.showPopover();
+    });
+  }
+
+  document.documentElement.addEventListener("pointerleave", (event) => {
+    if (!event.relatedTarget) hideCursor();
+  });
+  document.addEventListener("pointerdown", (event) => {
+    if (event.pointerType !== "mouse") hideCursor();
+  });
+  for (const event of ["blur", "pagehide", "contextmenu", "dragstart", "pointercancel"]) {
+    window.addEventListener(event, hideCursor);
+  }
+  animationToggle.addEventListener("change", resetMotion);
+  reducedMotion.addEventListener("change", resetMotion);
+}

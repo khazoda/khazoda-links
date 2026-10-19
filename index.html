@@ -52,8 +52,8 @@
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="controls.css" />
 
-    <link rel="preload" href="static/pointer.cur" as="image" />
-    <link rel="preload" href="static/pointer_blue.cur" as="image" />
+    <link rel="preload" href="static/pointer.svg" as="image" />
+    <link rel="preload" href="static/pointer_blue.svg" as="image" />
     <link rel="preload" href="static/fonts/fredoka.woff2" as="font" type="font/woff2" crossorigin />
 
     <script type="module" src="script.js"></script>
@@ -104,6 +104,7 @@
       </dl>
       <div id="form-bottom-span">
         <label><input id="shortcut-toggle" type="checkbox" checked /> Enable N, M and K shortcuts</label>
+        <label><input id="cursor-toggle" type="checkbox" checked /> Enable Cursor Animations</label>
         <form method="dialog"><button>Okay</button></form>
       </div>
     </dialog>
@@ -145,6 +146,13 @@
         <div id="mods-grid" role="group" aria-label="Mods"><!-- MODS AUTOINSERT --></div>
       </div>
     </main>
-    <footer>&copy; <span id="copyright-year">2026</span> Khazoda</footer>
+    <footer>
+      &copy; <span id="copyright-year">2026</span> Khazoda &middot;
+      <a href="https://primmr.dev/projects/wii-pointer-cursors/">wii cursors by primmr</a>
+    </footer>
+    <div id="wii-cursor" popover="manual" aria-hidden="true">
+      <img src="static/pointer.svg" alt="" draggable="false" />
+      <img src="static/pointer_blue.svg" alt="" draggable="false" />
+    </div>
   </body>
 </html>
