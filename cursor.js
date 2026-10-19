@@ -2,7 +2,7 @@ const cursor = document.getElementById("wii-cursor");
 const animationToggle = document.getElementById("cursor-toggle");
 const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
 const images = [...cursor.children];
-let lastMove, settleTimer;
+let lastMove, settleTimer, moveFrame, pendingMove;
 
 function animationsEnabled() {
   return animationToggle.checked && !reducedMotion.matches;
@@ -19,6 +19,9 @@ function resetMotion() {
 }
 
 function hideCursor() {
+  cancelAnimationFrame(moveFrame);
+  moveFrame = null;
+  pendingMove = null;
   if (!lastMove) return;
   resetMotion();
   lastMove = null;
@@ -33,6 +36,17 @@ function moveCursor(event) {
   if (event.pointerType !== "mouse") return hideCursor();
   // keep native cursor until both cursor SVGs have loaded
   if (!images.every((image) => image.complete && image.naturalWidth > 0)) return;
+
+  // render latest position one per frame maximum. was causing issues with high polling rate mouse b4
+  // https://web.dev/articles/debounce-your-input-handlers
+  pendingMove = event;
+  if (moveFrame == null) moveFrame = requestAnimationFrame(renderCursor);
+}
+
+function renderCursor() {
+  const event = pendingMove;
+  moveFrame = null;
+  pendingMove = null;
 
   const animated = animationsEnabled();
   const elapsed = event.timeStamp - (lastMove?.time ?? 0);
@@ -74,9 +88,6 @@ if (cursor.showPopover) {
   document.addEventListener("pointerdown", pressCursor);
   window.addEventListener("pointerup", (event) => {
     if (event.button === 0) cursor.classList.remove("pressed");
-  });
-  document.addEventListener("pointerrawupdate", (event) => {
-    if (lastMove && event.pointerType === "mouse") positionCursor(event);
   });
 
   // reopen above dialog when it enters the top z layer
