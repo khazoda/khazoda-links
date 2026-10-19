@@ -59,6 +59,12 @@
     <script type="module" src="script.js"></script>
   </head>
   <body>
+    <button id="help-toggle" class="corner-button" type="button" aria-label="Keyboard controls" aria-haspopup="dialog" hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+        <rect x="2" y="5" width="20" height="14" rx="3" />
+        <path d="M6 9h.01M10 9h.01M14 9h.01M18 9h.01M6 12h.01M10 12h.01M14 12h.01M18 12h.01M8 15h8" />
+      </svg>
+    </button>
     <button id="sound-toggle" class="corner-button" type="button" aria-label="Mute sound" aria-pressed="false" hidden>
       <svg
         viewBox="0 0 24 24"
@@ -73,40 +79,58 @@
         <path class="sound-cross" d="m16 9 5 6m0-6-5 6" />
       </svg>
     </button>
-    <button id="help-toggle" class="corner-button" type="button" aria-label="Keyboard controls" aria-haspopup="dialog" hidden>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
-        <rect x="2" y="5" width="20" height="14" rx="3" />
-        <path d="M6 9h.01M10 9h.01M14 9h.01M18 9h.01M6 12h.01M10 12h.01M14 12h.01M18 12h.01M8 15h8" />
-      </svg>
-    </button>
     <p id="keyboard-instructions" class="sr-only" hidden>
       Use arrow keys to preview mods, N for their links, and Enter or Space to open a focused link. Tab works normally. Press K or use
       Keyboard controls for help or to disable letter shortcuts.
     </p>
     <p id="keyboard-status" class="sr-only" role="status"></p>
     <dialog id="keyboard-help" aria-labelledby="keyboard-title">
-      <h2 id="keyboard-title">Keyboard controls</h2>
-      <dl>
-        <dt>Arrow keys</dt>
-        <dd>Navigate the mod grid.</dd>
-        <dt>N / Shift + N</dt>
-        <dd>Cycle forwards / backwards through the selected mod's links.</dd>
-        <dt>Home / End</dt>
-        <dd>Jump to the first / last mod in the grid.</dd>
-        <dt>Enter / Space</dt>
-        <dd>Open the selected link. Hold Ctrl (⌘ on Mac) for a new tab.</dd>
-        <dt>Escape</dt>
-        <dd>Close quicklink preview and deselect current mod.</dd>
-        <dt>M</dt>
-        <dd>Mute or unmute sound.</dd>
-        <dt>K</dt>
-        <dd>Open or close keyboard controls.</dd>
-      </dl>
-      <div id="form-bottom-span">
-        <label><input id="shortcut-toggle" type="checkbox" checked /> Enable N, M and K shortcuts</label>
-        <label><input id="cursor-toggle" type="checkbox" checked /> Enable Cursor Animations</label>
-        <form method="dialog"><button>Okay</button></form>
-      </div>
+      <section class="dialog-section" aria-labelledby="keyboard-title">
+        <div class="dialog-header">
+          <h2 id="keyboard-title">Keyboard controls</h2>
+          <form method="dialog">
+            <button class="corner-button dialog-close" type="submit" aria-label="Close settings">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+                <path d="m6 6 12 12M18 6 6 18" />
+              </svg>
+            </button>
+          </form>
+        </div>
+        <dl>
+          <dt class="key-control-bg">Arrow keys</dt>
+          <dd>Navigate the mod grid.</dd>
+          <dt class="key-control-bg">N / Shift + N</dt>
+          <dd>Cycle forwards / backwards through the selected mod's links.</dd>
+          <dt class="key-control-bg">Home / End</dt>
+          <dd>Jump to the first / last mod in the grid.</dd>
+          <dt class="key-control-bg">Enter / Space</dt>
+          <dd>Open the selected link. Hold Ctrl (⌘ on Mac) for a new tab.</dd>
+          <dt class="key-control-bg">Escape</dt>
+          <dd>Close quicklink preview and deselect current mod.</dd>
+          <dt class="key-control-bg single-key">M</dt>
+          <dd>Mute or unmute sound.</dd>
+          <dt class="key-control-bg single-key">K</dt>
+          <dd>Open or close keyboard controls.</dd>
+        </dl>
+      </section>
+      <section class="dialog-section settings-list" aria-labelledby="settings-title">
+        <h3 id="settings-title">Settings</h3>
+        <fieldset class="settings-group">
+          <legend>Keyboard</legend>
+          <label>
+            <input id="shortcut-toggle" type="checkbox" checked />
+            <span
+              >Enable <span class="key-control-bg single-key">N</span>, <span class="key-control-bg single-key">M</span> and
+              <span class="key-control-bg single-key">K</span> shortcuts</span
+            >
+          </label>
+        </fieldset>
+        <fieldset class="settings-group">
+          <legend>Cursor</legend>
+          <label><input id="custom-cursor-toggle" type="checkbox" checked /> <span>Use custom cursor</span></label>
+          <label><input id="cursor-toggle" type="checkbox" checked /> <span>Animate cursor</span></label>
+        </fieldset>
+      </section>
     </dialog>
     <noscript>
       <style>

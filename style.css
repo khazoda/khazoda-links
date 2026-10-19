@@ -22,6 +22,11 @@ html:has(#wii-cursor:popover-open) {
   --cursor-action: none;
 }
 
+html:has(#custom-cursor-toggle:not(:checked)) {
+  --cursor-default: auto;
+  --cursor-action: pointer;
+}
+
 html:has(:is(a[href], button, input, label):hover) {
   --cursor-hover: 1;
 }

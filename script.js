@@ -1,5 +1,5 @@
 import { playSound } from "./sound.js";
-import "./cursor.js";
+import { syncCursorSettings } from "./cursor.js";
 
 document.getElementById("copyright-year").textContent = new Date().getFullYear();
 
@@ -13,6 +13,7 @@ const keyboardHelp = document.getElementById("keyboard-help");
 const helpToggle = document.getElementById("help-toggle");
 const shortcutToggle = document.getElementById("shortcut-toggle");
 const cursorToggle = document.getElementById("cursor-toggle");
+const customCursorToggle = document.getElementById("custom-cursor-toggle");
 const quicklinks = document.getElementById("quicklinks");
 const modLinks = [urlDisplay, ...quicklinks.querySelectorAll("a")];
 const bubbles = [...grid.querySelectorAll(".bubble")];
@@ -23,6 +24,7 @@ let typewriterTimer, nameTimer;
 for (const [toggle, key] of [
   [shortcutToggle, "keyboardShortcuts"],
   [cursorToggle, "cursorAnimations"],
+  [customCursorToggle, "customCursor"],
 ]) {
   try {
     toggle.checked = localStorage.getItem(key) !== "false";
@@ -34,6 +36,8 @@ for (const [toggle, key] of [
   });
 }
 
+syncCursorSettings();
+
 helpToggle.hidden = false;
 new ResizeObserver(fitName).observe(grid);
 document.fonts.ready.then(fitName);
@@ -44,9 +48,7 @@ helpToggle.addEventListener("click", () => {
 });
 
 keyboardHelp.addEventListener("click", (event) => {
-  const { left, right, top, bottom } = keyboardHelp.getBoundingClientRect();
-  const outside = event.clientX < left || event.clientX > right || event.clientY < top || event.clientY > bottom;
-  if (event.target === keyboardHelp && outside) keyboardHelp.close();
+  if (event.target === keyboardHelp) keyboardHelp.close();
 });
 
 for (const link of [...bubbles, ...modLinks]) {

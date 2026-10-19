@@ -1,5 +1,6 @@
 const cursor = document.getElementById("wii-cursor");
 const animationToggle = document.getElementById("cursor-toggle");
+const customCursorToggle = document.getElementById("custom-cursor-toggle");
 const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
 const images = [...cursor.children];
 let lastMove, settleTimer, moveFrame, pendingMove;
@@ -28,12 +29,17 @@ function hideCursor() {
   cursor.hidePopover();
 }
 
+export function syncCursorSettings() {
+  animationToggle.disabled = !customCursorToggle.checked;
+  if (!customCursorToggle.checked) hideCursor();
+}
+
 function positionCursor(event) {
   cursor.style.translate = `${event.clientX}px ${event.clientY}px`;
 }
 
 function moveCursor(event) {
-  if (event.pointerType !== "mouse") return hideCursor();
+  if (!customCursorToggle.checked || event.pointerType !== "mouse") return hideCursor();
   // keep native cursor until both cursor SVGs have loaded
   if (!images.every((image) => image.complete && image.naturalWidth > 0)) return;
 
@@ -84,6 +90,7 @@ function pressCursor(event) {
 }
 
 if (cursor.showPopover) {
+  customCursorToggle.addEventListener("change", syncCursorSettings);
   document.addEventListener("pointermove", moveCursor);
   document.addEventListener("pointerdown", pressCursor);
   window.addEventListener("pointerup", (event) => {
