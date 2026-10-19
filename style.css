@@ -49,10 +49,15 @@ html:has(:is(a[href], button, input, label):hover) {
 
 @media (prefers-reduced-motion: no-preference) {
   html:has(#cursor-toggle:checked) #wii-cursor {
-    transition: rotate 260ms ease-out;
+    transition:
+      rotate 260ms ease-out,
+      scale 90ms ease-out;
   }
   html:has(#cursor-toggle:checked) #wii-cursor.moving {
-    transition-duration: 45ms;
+    transition-duration: 45ms, 90ms;
+  }
+  html:has(#cursor-toggle:checked) #wii-cursor.pressed {
+    scale: 0.95 0.9;
   }
 }
 

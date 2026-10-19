@@ -2,7 +2,7 @@ const cursor = document.getElementById("wii-cursor");
 const animationToggle = document.getElementById("cursor-toggle");
 const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
 const images = [...cursor.children];
-let lastMove, settleTimer, clickAnimation;
+let lastMove, settleTimer;
 
 function animationsEnabled() {
   return animationToggle.checked && !reducedMotion.matches;
@@ -14,8 +14,7 @@ function clamp(value, limit) {
 
 function resetMotion() {
   clearTimeout(settleTimer);
-  clickAnimation?.cancel();
-  cursor.classList.remove("moving");
+  cursor.classList.remove("moving", "pressed");
   cursor.style.rotate = "0deg";
 }
 
@@ -63,19 +62,19 @@ function moveCursor(event) {
 }
 
 function pressCursor(event) {
-  if (!lastMove || !animationsEnabled() || event.button !== 0 || event.detail === 0) return;
+  if (event.pointerType !== "mouse") return hideCursor();
+  if (!lastMove || !animationsEnabled() || event.button !== 0) return;
   if (!event.target.closest("a[href], button, input, label")) return;
 
-  clickAnimation?.cancel();
-  clickAnimation = cursor.animate([{ scale: "1" }, { scale: "0.95 0.9", offset: 0.3 }, { scale: "1" }], {
-    duration: 180,
-    easing: "ease-out",
-  });
+  cursor.classList.add("pressed");
 }
 
 if (cursor.showPopover) {
   document.addEventListener("pointermove", moveCursor);
-  document.addEventListener("click", pressCursor);
+  document.addEventListener("pointerdown", pressCursor);
+  window.addEventListener("pointerup", (event) => {
+    if (event.button === 0) cursor.classList.remove("pressed");
+  });
   document.addEventListener("pointerrawupdate", (event) => {
     if (lastMove && event.pointerType === "mouse") positionCursor(event);
   });
@@ -91,9 +90,6 @@ if (cursor.showPopover) {
 
   document.documentElement.addEventListener("pointerleave", (event) => {
     if (!event.relatedTarget) hideCursor();
-  });
-  document.addEventListener("pointerdown", (event) => {
-    if (event.pointerType !== "mouse") hideCursor();
   });
   for (const event of ["blur", "pagehide", "contextmenu", "dragstart", "pointercancel"]) {
     window.addEventListener(event, hideCursor);
