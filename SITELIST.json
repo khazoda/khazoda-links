@@ -125,5 +125,14 @@
     "website": "https://khazoda.com/#bzl",
     "secondary": true,
     "colors": ["#3e6230", "#3e6230", "#3e6230", "#3e6230", "#3e6230", "#3e6230", "#015c5f", "#015c5f", "#015c5f", "#015c5f", "#015c5f", "#015c5f", "#272059", "#272059", "#272059", "#272059", "#272059", "#272059", "#272059"]
+  },
+  "llc": {
+    "name": "Leaf Litter Critters",
+    "modrinth": "https://modrinth.com/mod/leaflittercritters",
+    "curseforge": "https://www.curseforge.com/minecraft/mc-mods/leaflittercritters",
+    "github": "https://github.com/khazoda-mods/leaf-litter-critters",
+    "website": "https://khazoda.com/#llc",
+    "secondary": true,
+    "colors": ["#357936", "#39823a"]
   }
 }
